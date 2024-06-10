@@ -1,0 +1,34 @@
+#!/bin/bash
+# Script compiles app, installs Envoy and sets up the sidecar
+BUILD_DIR=$1
+CACHE_DIR=$2
+
+echo "Compiling Node.js application and setting up XSUAA-Envoy sidecar"
+cd $BUILD_DIR
+
+# install Node.js dependencies
+npm install --production
+
+# install Envoy
+echo "Installing XSUAA-Envoy sidecar..."
+mkdir -p envoy
+cd envoy
+curl -L https://getenvoy.io/downloads/envoy-latest -o envoy.tar.gz
+tar -xzf envoy.tar.gz
+rm envoy.tar.gz
+
+# move back to build dir
+cd $BUILD_DIR
+
+# copy Envoy config file
+cp envoy.yaml.erb envoy/envoy_config.yaml
+
+# set up start up script for the sidecar
+cat <<EOF > start.sh
+#!/bin/bash
+# Start Envoy sidecar
+./envoy/envoy -c ./envoy/envoy_config.yaml &
+# start Node.js application
+npm start
+EOF
+chmod +x start.sh
