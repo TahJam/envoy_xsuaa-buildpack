@@ -1,3 +1,3 @@
-#!/bin/bash
-echo "Custom Envoy Sidecar Buildpack for Node.js application"
+#!/usr/bin/env ruby
+put "Custom Envoy Sidecar Buildpack for Node.js application"
 exit 0
