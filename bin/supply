@@ -37,25 +37,17 @@ root_dir = Dir.pwd  # Change this to your desired path
 # Build the directory tree hash
 tree = directory_tree(root_dir)
 
+# Print the tree structure (you can implement your own printing logic)
 def print_tree(data, level = 0)
-  prefix = "  " * level
-  if level == 0
-    puts prefix + data[:name]
-  else
-    puts prefix + "|"
-    puts prefix + "  " * (level - 1) + "+" + data[:name]
-  end
-
-  data[:children].each do |child|
-    if child.is_a?(Hash)
-      print_tree(child, level + 2)
-    else
-      puts prefix + "  " * level + "-" + child.to_s
+    puts "  " * level + data[:name]
+    data[:children].each do |child|
+      if child.is_a?(Hash)
+        print_tree(child, level + 2)
+      else
+        puts "  " * (level + 2) + child.to_s
+      end
     end
   end
-end
-
-
 print_tree(tree)
 template = ERB.new(File.read(File.join(BUILD_DIR, "envoy.yaml.erb")), trim_mode: "-")
 config = template.result(binding)
