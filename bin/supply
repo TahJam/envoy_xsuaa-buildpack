@@ -17,10 +17,10 @@ VCAP_APPLICATION = JSON.parse(ENV["VCAP_APPLICATION"])
 
 puts "Build dir is " + BUILD_DIR
 # Get the current directory path
-dir = Dir.pwd
+# dir = Dir.pwd
 
 # Iterate through each child entry in the directory
-Dir.foreach(dir) do |entry|
+Dir.foreach(BUILD_DIR) do |entry|
   # Skip hidden files (".") and current directory ("..")
   next if entry == '.' || entry == '..'
   puts entry
