@@ -16,15 +16,47 @@ VCAP_SERVICES = JSON.parse(ENV["VCAP_SERVICES"])
 VCAP_APPLICATION = JSON.parse(ENV["VCAP_APPLICATION"])
 
 puts "Build dir is " + BUILD_DIR
-# Get the current directory path
-# dir = Dir.pwd
-
-# Iterate through each child entry in the directory
-Dir.foreach(BUILD_DIR) do |entry|
-  # Skip hidden files (".") and current directory ("..")
-  next if entry == '.' || entry == '..'
-  puts entry
+def directory_tree(path)
+  data = { name: File.basename(path) }
+  data[:children] = []
+  Dir.foreach(path) do |entry|
+    next if entry == '.' || entry == '..' || entry == 'node_modules'
+    full_path = File.join(path, entry)
+    if File.directory?(full_path)
+      data[:children] << directory_tree(full_path)
+    else
+      data[:children] << entry
+    end
+  end
+  data
 end
+
+# Get the starting directory path
+root_dir = Dir.pwd  # Change this to your desired path
+
+# Build the directory tree hash
+tree = directory_tree(root_dir)
+
+def print_tree(data, level = 0)
+  prefix = "  " * level
+  if level == 0
+    puts prefix + data[:name]
+  else
+    puts prefix + "|"
+    puts prefix + "  " * (level - 1) + "+" + data[:name]
+  end
+
+  data[:children].each do |child|
+    if child.is_a?(Hash)
+      print_tree(child, level + 2)
+    else
+      puts prefix + "  " * level + "-" + child.to_s
+    end
+  end
+end
+
+
+print_tree(tree)
 template = ERB.new(File.read(File.join(BUILD_DIR, "envoy.yaml.erb")), trim_mode: "-")
 config = template.result(binding)
 File.write(File.join(DEPS_DIR, DEPS_IDX, "envoy.yaml"), config)
