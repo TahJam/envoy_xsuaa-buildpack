@@ -39,12 +39,12 @@ tree = directory_tree(root_dir)
 
 # Print the tree structure (you can implement your own printing logic)
 def print_tree(data, level = 0)
-    puts "  " * level + data[:name]
+    puts "-" * level + ">" + data[:name]
     data[:children].each do |child|
       if child.is_a?(Hash)
         print_tree(child, level + 2)
       else
-        puts "  " * (level + 2) + child.to_s
+        puts "|" + "---" * (level + 2) + child.to_s
       end
     end
   end
