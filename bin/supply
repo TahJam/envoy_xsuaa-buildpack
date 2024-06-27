@@ -49,7 +49,7 @@ def print_tree(data, level = 0)
     end
   end
 print_tree(tree)
-template = ERB.new(File.read(File.join(BUILD_DIR, "envoy.yaml.erb")), trim_mode: "-")
+template = ERB.new(File.read(File.join(BUILD_DIR, "/srv/envoy.yaml.erb")), trim_mode: "-")
 config = template.result(binding)
 File.write(File.join(DEPS_DIR, DEPS_IDX, "envoy.yaml"), config)
 
