@@ -32,7 +32,7 @@ def directory_tree(path)
 end
 
 # Get the starting directory path
-root_dir = Dir.pwd  # Change this to your desired path
+root_dir = BUILD_DIR
 
 # Build the directory tree hash
 tree = directory_tree(root_dir)
