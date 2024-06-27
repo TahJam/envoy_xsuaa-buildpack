@@ -1,4 +1,5 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env ruby 
+# test
 
 require 'erb'
 require 'json'
@@ -14,6 +15,16 @@ puts "-----> CF Envoy Proxy Buildpack"
 VCAP_SERVICES = JSON.parse(ENV["VCAP_SERVICES"])
 VCAP_APPLICATION = JSON.parse(ENV["VCAP_APPLICATION"])
 
+puts "Build dir is " + BUILD_DIR
+# Get the current directory path
+dir = Dir.pwd
+
+# Iterate through each child entry in the directory
+Dir.foreach(dir) do |entry|
+  # Skip hidden files (".") and current directory ("..")
+  next if entry == '.' || entry == '..'
+  puts entry
+end
 template = ERB.new(File.read(File.join(BUILD_DIR, "envoy.yaml.erb")), trim_mode: "-")
 config = template.result(binding)
 File.write(File.join(DEPS_DIR, DEPS_IDX, "envoy.yaml"), config)
