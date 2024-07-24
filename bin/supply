@@ -51,7 +51,7 @@ def print_tree(data, level = 0)
 # print_tree(tree)
 
 template_name = "envoy.yaml.erb"
-xsuaa = vcap_services["xsuaa"][0]["credentials"]
+xsuaa = VCAP_SERVICES["xsuaa"][0]["credentials"]
 xsuaa_host = URI.parse(xsuaa["url"]).host
 template = ERB.new(File.read(File.join(File.dirname(__FILE__),"../", template_name)))
 File.write(File.join(DEPS_DIR, DEPS_IDX, "sidecar.yaml"), template.result)
