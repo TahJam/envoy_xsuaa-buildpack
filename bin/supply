@@ -31,13 +31,7 @@ def directory_tree(path)
   data
 end
 
-# Get the starting directory path
-root_dir = BUILD_DIR
-
-# Build the directory tree hash
-tree = directory_tree(root_dir)
-
-# Print the tree structure (you can implement your own printing logic)
+# Print the tree structure
 def print_tree(data, level = 0)
     puts "-" * level + ">" + data[:name]
     data[:children].each do |child|
@@ -48,15 +42,23 @@ def print_tree(data, level = 0)
       end
     end
   end
-print_tree(tree)
-template = ERB.new(File.read(File.join(BUILD_DIR, "/srv/envoy.yaml.erb")), trim_mode: "-")
-config = template.result(binding)
-File.write(File.join(DEPS_DIR, DEPS_IDX, "envoy.yaml"), config)
+
+# Get the starting directory path
+# root_dir = BUILD_DIR
+# Build the directory tree hash
+# tree = directory_tree(root_dir)
+# print_tree(tree)
+
+template_name = "envoy.yaml.erb"
+template = ERB.new(File.read(File.join(File.dirname(__FILE__),"../", template_name)))
+File.write(File.join(DEPS_DIR, DEPS_IDX, "sidecar.yaml"), template.result)
+
+puts File.read(File.join(DEPS_DIR, DEPS_IDX, "sidecar.yaml"))
 
 LAUNCH = %Q(---
 processes:
 - type: "sidecar-envoy"
-  command: "/etc/cf-assets/envoy/envoy -c /home/vcap/deps/#{DEPS_IDX}/envoy.yaml --log-level warn --base-id 1"
+  command: "/etc/cf-assets/envoy/envoy -c /home/vcap/deps/#{DEPS_IDX}/sidecar.yaml --log-level warn --base-id 1"
   platforms:
     cloudfoundry:
       sidecar_for: ["web"]
