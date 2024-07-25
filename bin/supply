@@ -55,16 +55,16 @@ xsuaa = VCAP_SERVICES["xsuaa"][0]["credentials"]
 xsuaa_host = URI.parse(xsuaa["url"]).host
 file_path = File.join(File.dirname(__FILE__),"../", template_name)
 puts "file path is " + file_path
-template = ERB.new(File.read(file_path))
+template = ERB.new(File.read(file_path), trim_mode: "-")
 config = template.result(binding)
-File.write(File.join(DEPS_DIR, DEPS_IDX, "sidecar.yaml"), config)
+File.write(File.join(DEPS_DIR, DEPS_IDX, "envoy.yaml"), config)
 
-# puts File.read(File.join(DEPS_DIR, DEPS_IDX, "sidecar.yaml"))
+puts File.read(File.join(DEPS_DIR, DEPS_IDX, "envoy.yaml"))
 
 LAUNCH = %Q(---
 processes:
 - type: "sidecar-envoy"
-  command: "/etc/cf-assets/envoy/envoy -c /home/vcap/deps/#{DEPS_IDX}/sidecar.yaml --log-level warn --base-id 1"
+  command: "/etc/cf-assets/envoy/envoy -c /home/vcap/deps/#{DEPS_IDX}/envoy.yaml --log-level warn --base-id 1"
   platforms:
     cloudfoundry:
       sidecar_for: ["web"]
