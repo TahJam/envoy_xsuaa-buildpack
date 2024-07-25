@@ -53,11 +53,13 @@ def print_tree(data, level = 0)
 template_name = "envoy.yaml.erb"
 xsuaa = VCAP_SERVICES["xsuaa"][0]["credentials"]
 xsuaa_host = URI.parse(xsuaa["url"]).host
-template = ERB.new(File.read(File.join(File.dirname(__FILE__),"../", template_name)))
+file_path = File.join(File.dirname(__FILE__),"../", template_name)
+puts "file path is " + file_path
+template = ERB.new(File.read(file_path))
 config = template.result(binding)
 File.write(File.join(DEPS_DIR, DEPS_IDX, "sidecar.yaml"), config)
 
-puts File.read(File.join(DEPS_DIR, DEPS_IDX, "sidecar.yaml"))
+# puts File.read(File.join(DEPS_DIR, DEPS_IDX, "sidecar.yaml"))
 
 LAUNCH = %Q(---
 processes:
