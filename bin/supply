@@ -50,6 +50,15 @@ def print_tree(data, level = 0)
 # tree = directory_tree(root_dir)
 # print_tree(tree)
 
+# check if an xsuaa binding exists and there is only 1
+number_xsuaa_bindings = VCAP_SERVICES["xsuaa"] == nil ? 0 : VCAP_SERVICES["xsuaa"].size
+if number_xsuaa_bindings > 1
+  abort("Multiple XSUAA bindings are not supported, aborting")
+elsif number_xsuaa_bindings == 0
+  abort("There must be an XSUAA binding, aborting")
+else
+  puts "XSUAA binding exists, building Envoy sidecar"
+
 template_name = "envoy.yaml.erb"
 xsuaa = VCAP_SERVICES["xsuaa"][0]["credentials"]
 xsuaa_host = URI.parse(xsuaa["url"]).host
