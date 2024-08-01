@@ -58,6 +58,7 @@ elsif number_xsuaa_bindings == 0
   abort("There must be an XSUAA binding, aborting")
 else
   puts "XSUAA binding exists, building Envoy sidecar"
+end
 
 template_name = "envoy.yaml.erb"
 xsuaa = VCAP_SERVICES["xsuaa"][0]["credentials"]
